@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>番号発行</title>
+</head>
+<body>
+  <h1>番号発行フォーム</h1>
+  <label>有効期限を入力：<input type="date" id="expiry" /></label><br><br>
+  <button onclick="generate()">番号を発行</button>
+
+  <p id="output"></p>
+
+  <script>
+    function generate() {
+      const expiry = document.getElementById('expiry').value;
+      const number = Math.floor(100000 + Math.random() * 900000);
+
+      fetch('/register', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ number, expiry })
+      })
+      .then(res => res.text())
+      .then(msg => {
+        document.getElementById('output').innerText = `あなたの番号は ${number} です。控えておいてください。\n${msg}`;
+      });
+    }
+  </script>
+</body>
+</html>
