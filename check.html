@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>番号チェック</title>
+</head>
+<body>
+  <h1>番号チェック</h1>
+  <label>番号を入力：<input type="text" id="number" /></label><br><br>
+  <button onclick="check()">確認する</button>
+
+  <p id="result"></p>
+
+  <script>
+    function check() {
+      const number = document.getElementById('number').value;
+
+      fetch('/verify', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({ number })
+      })
+      .then(res => res.text())
+      .then(msg => {
+        document.getElementById('result').innerText = msg;
+      });
+    }
+  </script>
+</body>
+</html>
