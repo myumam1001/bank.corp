@@ -5,7 +5,7 @@
   <title>番号チェック</title>
 </head>
 <body>
-  <h1>番号チェック</h1>
+  <h1>番号チェックフォーム</h1>
   <label>番号を入力：<input type="text" id="number" /></label><br><br>
   <button onclick="check()">確認する</button>
 
@@ -14,16 +14,20 @@
   <script>
     function check() {
       const number = document.getElementById('number').value;
+      const today = new Date().toISOString().split('T')[0];  // 今日の日付（YYYY-MM-DD形式）
 
-      fetch('/verify', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ number })
-      })
-      .then(res => res.text())
-      .then(msg => {
-        document.getElementById('result').innerText = msg;
-      });
+      // ローカルストレージから番号データを取得
+      let data = JSON.parse(localStorage.getItem('numbers')) || [];
+
+      // 番号を検索
+      const match = data.find(entry => entry.number == number && entry.expiry >= today);
+
+      // 結果を表示
+      if (match) {
+        document.getElementById('result').innerText = '✅ 有効な番号です。';
+      } else {
+        document.getElementById('result').innerText = '❌ 無効な番号または有効期限切れです。';
+      }
     }
   </script>
 </body>
