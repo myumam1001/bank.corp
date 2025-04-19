@@ -14,17 +14,15 @@
   <script>
     function generate() {
       const expiry = document.getElementById('expiry').value;
-      const number = Math.floor(100000 + Math.random() * 900000);
+      const number = Math.floor(100000 + Math.random() * 900000); // ランダムな6桁の番号を生成
 
-      fetch('/register', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({ number, expiry })
-      })
-      .then(res => res.text())
-      .then(msg => {
-        document.getElementById('output').innerText = `あなたの番号は ${number} です。控えておいてください。\n${msg}`;
-      });
+      // ローカルストレージに番号と有効期限を保存
+      let data = JSON.parse(localStorage.getItem('numbers')) || []; // 既存の番号データを取得（無ければ空配列）
+      data.push({ number, expiry });
+      localStorage.setItem('numbers', JSON.stringify(data)); // 更新したデータをローカルストレージに保存
+
+      // 出力
+      document.getElementById('output').innerText = `発行された番号は ${number} です。控えておいてください。`;
     }
   </script>
 </body>
