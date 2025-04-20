@@ -2,50 +2,37 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8">
-  <title>銀行会社ホームページ</title>
-  <style>
-    body {
-      margin: 0;
-      padding: 0;
-    }
-
-    .top-button,
-    .bottom-button {
-      position: fixed;
-      left: 0;
-      width: 100%;
-      height: 80px; /* ボタンの高さ */
-      font-size: 24px;
-      font-weight: bold;
-      border: none;
-      color: white;
-      cursor: pointer;
-    }
-
-    .top-button {
-      top: 0;
-      background-color: #007bff;
-    }
-
-    .bottom-button {
-      bottom: 0;
-      background-color: #28a745;
-    }
-
-    .content {
-      padding: 100px 20px; /* 上下のボタンと重ならないように余白を確保 */
-    }
-  </style>
+  <title>ローカルストレージ操作</title>
 </head>
 <body>
 
-  <button class="top-button" onclick="location.href='seve.html'">お金の生成</button>
+  <h1 id="output">ここに表示されます</h1>
 
-  <div class="content">
-    <p>銀行会社ホームページ</p>
-  </div>
+  <button onclick="saveText()">テキストを保存</button>
+  <button onclick="loadText()">テキストを読み込み</button>
+  <button onclick="deleteText()">テキストを削除</button>
 
-  <button class="bottom-button"　onclick="location.href='che.html'">お金の確認</button>
+  <script>
+    function saveText() {
+      const text = "こんにちは、ローカルストレージ！";
+      localStorage.setItem("myText", text);
+      alert("保存しました！");
+    }
+
+    function loadText() {
+      const saved = localStorage.getItem("myText");
+      if (saved) {
+        document.getElementById("output").textContent = saved;
+      } else {
+        document.getElementById("output").textContent = "保存されたテキストがありません。";
+      }
+    }
+
+    function deleteText() {
+      localStorage.removeItem("myText");
+      document.getElementById("output").textContent = "テキストを削除しました。";
+    }
+  </script>
 
 </body>
 </html>
