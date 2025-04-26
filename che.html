@@ -8,49 +8,35 @@
   <h1>番号チェックフォーム</h1>
   <label>番号を入力：<input type="text" id="number" /></label><br><br>
   <button onclick="check()">確認する</button>
-
   <p id="result"></p>
 
   <script>
     function check() {
-      const number = document.getElementById('number').value;
-      const today = new Date().toISOString().split('T')[0];  // 今日の日付（YYYY-MM-DD形式）
-
-      // ローカルストレージから番号データを取得
+      const number = document.getElementById('number').value.trim();
+      const today = new Date().toISOString().split('T')[0];
       let data = JSON.parse(localStorage.getItem('numbers')) || [];
 
-      // 番号を検索
-      const match = data.find(entry => entry.number == number && entry.expiry >= today);
+      const match = data.find(entry => entry.number.toString() === number);
 
-      // 結果を表示
       if (match) {
-        document.getElementById('result').innerText = '✅ 有効な番号です。';
-        deleteNumberByValue(number);
+        if (match.expiry >= today) {
+          document.getElementById('result').innerText =
+            `✅ 有効な番号です。\n金額：¥${match.amount}\n有効期限：${match.expiry}`;
+          deleteNumberByValue(number); // 使用後に削除
+        } else {
+          document.getElementById('result').innerText = '❌ 有効期限が切れています。';
+          deleteNumberByValue(number);
+        }
       } else {
-        document.getElementById('result').innerText = '❌ 無効な番号または有効期限切れです。';
+        document.getElementById('result').innerText = '❌ 該当する番号が見つかりません。';
       }
     }
+
     function deleteNumberByValue(input) {
- 　 let data = JSON.parse(localStorage.getItem('numbers')) || [];
-  　const newData = data.filter(item => item.number.toString() !== input);
-  　localStorage.setItem('numbers', JSON.stringify(newData));
-　　}
-     const input = prompt("番号を入力してください:");
-  const record = localStorage.getItem(input);
-
-  if (record) {
-    const data = JSON.parse(record);
-    const now = Date.now();
-
-    if (now > data.expiry) {
-      alert("この番号は期限切れです。");
-    } else {
-      const date = new Date(data.expiry).toLocaleString();
-      alert(`この番号は有効です。\n金額：¥${data.amount}\n有効期限：${date}`);
+      let data = JSON.parse(localStorage.getItem('numbers')) || [];
+      const newData = data.filter(item => item.number.toString() !== input);
+      localStorage.setItem('numbers', JSON.stringify(newData));
     }
-  } else {
-    alert("その番号は存在しません。");
-  }
   </script>
 </body>
 </html>
