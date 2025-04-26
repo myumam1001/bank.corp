@@ -7,42 +7,30 @@
 <body>
   <h1>番号発行フォーム</h1>
   <label>有効期限を入力：<input type="date" id="expiry" /></label><br><br>
+  <label>金額を入力：<input type="number" id="amount" min="1" /></label><br><br>
   <button onclick="generate()">番号を発行</button>
-
   <p id="output"></p>
 
   <script>
     function generate() {
       const expiry = document.getElementById('expiry').value;
-      const number = Math.floor(100000 + Math.random() * 900000); // ランダムな6桁の番号を生成
+      const amount = parseInt(document.getElementById('amount').value, 10);
 
-      // ローカルストレージに番号と有効期限を保存
-      let data = JSON.parse(localStorage.getItem('numbers')) || []; // 既存の番号データを取得（無ければ空配列）
-      data.push({ number, expiry });
-      localStorage.setItem('numbers', JSON.stringify(data)); // 更新したデータをローカルストレージに保存
+      if (!expiry || isNaN(amount)) {
+        alert("有効期限と金額を入力してください。");
+        return;
+      }
 
-      // 出力
+      const number = Math.floor(100000 + Math.random() * 900000); // ランダムな6桁番号
+
+      // 保存データの読み込み
+      let data = JSON.parse(localStorage.getItem('numbers')) || [];
+
+      data.push({ number, expiry, amount });
+      localStorage.setItem('numbers', JSON.stringify(data));
+
       document.getElementById('output').innerText = `発行された番号は ${number} です。控えておいてください。`;
     }
-     // ランダム番号生成（例：6桁）
-  const rand = Math.floor(100000 + Math.random() * 900000).toString();
-
-  // ユーザーに金額と期限を入力させる
-  const amount = prompt("金額を入力してください（円）:");
-  const days = prompt("有効期限（日数）を入力してください:");
-
-  if (amount && days) {
-    const expiry = Date.now() + parseInt(days) * 24 * 60 * 60 * 1000;
-
-    const data = {
-      amount: parseInt(amount),
-      expiry: expiry
-    };
-
-    localStorage.setItem(rand, JSON.stringify(data));
-    alert(`保存完了！番号：${rand}`);
-  }
-</script>
   </script>
 </body>
 </html>
