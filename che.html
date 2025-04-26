@@ -35,6 +35,22 @@
   　const newData = data.filter(item => item.number.toString() !== input);
   　localStorage.setItem('numbers', JSON.stringify(newData));
 　　}
+     const input = prompt("番号を入力してください:");
+  const record = localStorage.getItem(input);
+
+  if (record) {
+    const data = JSON.parse(record);
+    const now = Date.now();
+
+    if (now > data.expiry) {
+      alert("この番号は期限切れです。");
+    } else {
+      const date = new Date(data.expiry).toLocaleString();
+      alert(`この番号は有効です。\n金額：¥${data.amount}\n有効期限：${date}`);
+    }
+  } else {
+    alert("その番号は存在しません。");
+  }
   </script>
 </body>
 </html>
