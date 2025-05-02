@@ -38,8 +38,7 @@
     'https://felcajttmppckuhwazqv.supabase.co', // あなたのURL
     'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZlbGNhanR0bXBwY2t1aHdhenF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYxNzMyMjEsImV4cCI6MjA2MTc0OTIyMX0.tVamoZqcw2WqzcbzNSgTeBDvXuSv8n7mOxjFKrht9iM'              // あなたのAPIキー
   );
-</script>
-async function generate() {
+  async function generate() {
   const expiry = document.getElementById('expiry').value;
   const amount = parseInt(document.getElementById('amount').value, 10);
   const number = Math.floor(100000 + Math.random() * 900000).toString();
@@ -55,5 +54,6 @@ async function generate() {
     document.getElementById('output').innerText = `発行された番号は ${number} です。`;
   }
 }
+</script>
 </body>
 </html>
