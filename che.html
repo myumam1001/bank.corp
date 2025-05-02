@@ -37,6 +37,26 @@
       const newData = data.filter(item => item.number.toString() !== input);
       localStorage.setItem('numbers', JSON.stringify(newData));
     }
+    async function check() {
+  const input = document.getElementById('number').value.trim();
+
+  const { data, error } = await supabase
+    .from('numbers')
+    .select('*')
+    .eq('number', input)
+    .maybeSingle();
+
+  const result = document.getElementById('result');
+  const today = new Date().toISOString().split('T')[0];
+
+  if (error || !data) {
+    result.innerText = '❌ 該当する番号が見つかりません。';
+  } else if (data.expiry < today) {
+    result.innerText = '❌ 有効期限が切れています。';
+  } else {
+    result.innerText = `✅ 有効な番号です。\n金額：¥${data.amount}\n有効期限：${data.expiry}`;
+  }
+}
   </script>
 </body>
 </html>
