@@ -11,49 +11,32 @@
   <button onclick="generate()">番号を発行</button>
   <p id="output"></p>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script>
-    function generate() {
+    const supabase = supabase.createClient(
+      'https://tovtlvkqlqtvyckobyrz.supabase.co',  // 新しいURL
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvdnRsdmtxbHF0dnlja29ieXJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYyMzUwODEsImV4cCI6MjA2MTgxMTA4MX0.TViudpHsxgZ_IVGI-Snt4dYWtlSroymH1_RrYq-Iepk'  // 新しいAPIキー
+    );
+
+    async function generate() {
       const expiry = document.getElementById('expiry').value;
       const amount = parseInt(document.getElementById('amount').value, 10);
+      const number = Math.floor(100000 + Math.random() * 900000).toString();
 
-      if (!expiry || isNaN(amount)) {
-        alert("有効期限と金額を入力してください。");
-        return;
+      // 番号をSupabaseに挿入
+      const { data, error } = await supabase.from('numbers').insert([
+        { number, expiry, amount }
+      ]);
+
+      if (error) {
+        alert('保存に失敗しました');
+        console.error(error);
+      } else {
+        document.getElementById('output').innerText = `発行された番号は ${number} です。控えておいてください。`;
       }
-
-      const number = Math.floor(100000 + Math.random() * 900000); // ランダムな6桁番号
-
-      // 保存データの読み込み
-      let data = JSON.parse(localStorage.getItem('numbers')) || [];
-
-      data.push({ number, expiry, amount });
-      localStorage.setItem('numbers', JSON.stringify(data));
-
-      document.getElementById('output').innerText = `発行された番号は ${number} です。控えておいてください。`;
     }
   </script>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
-<script>
-  const supabase = supabase.createClient(
-    'https://felcajttmppckuhwazqv.supabase.co', // あなたのURL
-    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZlbGNhanR0bXBwY2t1aHdhenF2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYxNzMyMjEsImV4cCI6MjA2MTc0OTIyMX0.tVamoZqcw2WqzcbzNSgTeBDvXuSv8n7mOxjFKrht9iM'              // あなたのAPIキー
-  );
-  async function generate() {
-  const expiry = document.getElementById('expiry').value;
-  const amount = parseInt(document.getElementById('amount').value, 10);
-  const number = Math.floor(100000 + Math.random() * 900000).toString();
-
-  const { data, error } = await supabase.from('numbers').insert([
-    { number, expiry, amount }
-  ]);
-
-  if (error) {
-    alert('保存に失敗しました');
-    console.error(error);
-  } else {
-    document.getElementById('output').innerText = `発行された番号は ${number} です。`;
-  }
-}
-</script>
 </body>
 </html>
+
+
