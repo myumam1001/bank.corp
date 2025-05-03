@@ -10,53 +10,52 @@
   <button onclick="check()">確認する</button>
   <p id="result"></p>
 
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script>
-    function check() {
+    const supabase = supabase.createClient(
+      'https://tovtlvkqlqtvyckobyrz.supabase.co',  // 新しいURL
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvdnRsdmtxbHF0dnlja29ieXJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYyMzUwODEsImV4cCI6MjA2MTgxMTA4MX0.TViudpHsxgZ_IVGI-Snt4dYWtlSroymH1_RrYq-Iepk'  // 新しいAPIキー
+    );
+
+    async function check() {
       const number = document.getElementById('number').value.trim();
       const today = new Date().toISOString().split('T')[0];
-      let data = JSON.parse(localStorage.getItem('numbers')) || [];
 
-      const match = data.find(entry => entry.number.toString() === number);
+      const { data, error } = await supabase
+        .from('numbers')
+        .select('number, expiry, amount')
+        .eq('number', number)
+        .single();  // 最初に見つかった1件のみを返す
 
-      if (match) {
-        if (match.expiry >= today) {
-          document.getElementById('result').innerText =
-            `✅ 有効な番号です。\n金額：¥${match.amount}\n有効期限：${match.expiry}`;
-          deleteNumberByValue(number); // 使用後に削除
+      if (error) {
+        document.getElementById('result').innerText = '❌ 該当する番号が見つかりません。';
+      } else if (data) {
+        if (data.expiry >= today) {
+          document.getElementById('result').innerText = 
+            `✅ 有効な番号です。\n金額：¥${data.amount}\n有効期限：${data.expiry}`;
+          // 使用後に削除
+          deleteNumberByValue(number);
         } else {
           document.getElementById('result').innerText = '❌ 有効期限が切れています。';
+          // 使用後に削除
           deleteNumberByValue(number);
         }
-      } else {
-        document.getElementById('result').innerText = '❌ 該当する番号が見つかりません。';
       }
     }
 
-    function deleteNumberByValue(input) {
-      let data = JSON.parse(localStorage.getItem('numbers')) || [];
-      const newData = data.filter(item => item.number.toString() !== input);
-      localStorage.setItem('numbers', JSON.stringify(newData));
+    // 番号を削除する関数
+    async function deleteNumberByValue(input) {
+      const { data, error } = await supabase
+        .from('numbers')
+        .delete()
+        .eq('number', input);
+
+      if (error) {
+        console.error("削除に失敗しました", error);
+      }
     }
-    async function check() {
-  const input = document.getElementById('number').value.trim();
-
-  const { data, error } = await supabase
-    .from('numbers')
-    .select('*')
-    .eq('number', input)
-    .maybeSingle();
-
-  const result = document.getElementById('result');
-  const today = new Date().toISOString().split('T')[0];
-
-  if (error || !data) {
-    result.innerText = '❌ 該当する番号が見つかりません。';
-  } else if (data.expiry < today) {
-    result.innerText = '❌ 有効期限が切れています。';
-  } else {
-    result.innerText = `✅ 有効な番号です。\n金額：¥${data.amount}\n有効期限：${data.expiry}`;
-  }
-}
   </script>
 </body>
 </html>
+
+
