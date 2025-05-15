@@ -12,9 +12,9 @@
 
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
   <script>
-    const supabase = supabase.createClient(
-      'https://tovtlvkqlqtvyckobyrz.supabase.co',  // 新しいURL
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvdnRsdmtxbHF0dnlja29ieXJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYyMzUwODEsImV4cCI6MjA2MTgxMTA4MX0.TViudpHsxgZ_IVGI-Snt4dYWtlSroymH1_RrYq-Iepk'  // 新しいAPIキー
+    const supabase = window.supabase.createClient(
+      'https://tovtlvkqlqtvyckobyrz.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvdnRsdmtxbHF0dnlja29ieXJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYyMzUwODEsImV4cCI6MjA2MTgxMTA4MX0.TViudpHsxgZ_IVGI-Snt4dYWtlSroymH1_RrYq-Iepk'
     );
 
     async function check() {
