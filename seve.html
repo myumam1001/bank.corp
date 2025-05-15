@@ -2,28 +2,48 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <title>番号発行テスト</title>
+  <title>番号発行</title>
 </head>
 <body>
-  <h1>番号発行フォーム（テスト）</h1>
+  <h1>番号発行フォーム</h1>
   <label>有効期限を入力：<input type="date" id="expiry" /></label><br><br>
   <label>金額を入力：<input type="number" id="amount" min="1" /></label><br><br>
   <button onclick="generate()">番号を発行</button>
   <p id="output"></p>
 
-  <!-- Supabaseライブラリ読み込み -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <!-- Supabase JSライブラリの読み込み -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
 
   <script>
-    // Supabaseクライアントを正しく初期化（v2の構文）
+    // Supabaseクライアントの初期化（修正ポイント）
     const supabase = window.supabase.createClient(
       'https://tovtlvkqlqtvyckobyrz.supabase.co',
       'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvdnRsdmtxbHF0dnlja29ieXJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYyMzUwODEsImV4cCI6MjA2MTgxMTA4MX0.TViudpHsxgZ_IVGI-Snt4dYWtlSroymH1_RrYq-Iepk'
     );
 
-    // ボタン押下で発動
     async function generate() {
-      document.getElementById('output').innerText = 'ボタンが押されました。';
+      const expiry = document.getElementById('expiry').value;
+      const amount = parseInt(document.getElementById('amount').value, 10);
+      const number = Math.floor(100000 + Math.random() * 900000).toString();
+
+      // 入力値のバリデーション
+      if (!expiry || isNaN(amount) || amount < 1) {
+        alert('有効期限と金額を正しく入力してください');
+        return;
+      }
+
+      // Supabaseにデータを挿入
+      const { data, error } = await supabase.from('numbers').insert([
+        { number, expiry, amount }
+      ]);
+
+      if (error) {
+        alert('保存に失敗しました');
+        console.error('Supabaseエラー:', error);
+      } else {
+        document.getElementById('output').innerText =
+          `発行された番号は ${number} です。控えておいてください。`;
+      }
     }
   </script>
 </body>
