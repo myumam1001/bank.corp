@@ -11,11 +11,14 @@
   <button onclick="generate()">番号を発行</button>
   <p id="output"></p>
 
+  <!-- Supabase JSライブラリの読み込み -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
   <script>
-    const supabase = supabase.createClient(
-      'https://tovtlvkqlqtvyckobyrz.supabase.co',  // 新しいURL
-      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvdnRsdmtxbHF0dnlja29ieXJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYyMzUwODEsImV4cCI6MjA2MTgxMTA4MX0.TViudpHsxgZ_IVGI-Snt4dYWtlSroymH1_RrYq-Iepk'  // 新しいAPIキー
+    // Supabaseクライアントの初期化（修正ポイント）
+    const supabase = window.supabase.createClient(
+      'https://tovtlvkqlqtvyckobyrz.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRvdnRsdmtxbHF0dnlja29ieXJ6Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDYyMzUwODEsImV4cCI6MjA2MTgxMTA4MX0.TViudpHsxgZ_IVGI-Snt4dYWtlSroymH1_RrYq-Iepk'
     );
 
     async function generate() {
@@ -23,20 +26,25 @@
       const amount = parseInt(document.getElementById('amount').value, 10);
       const number = Math.floor(100000 + Math.random() * 900000).toString();
 
-      // 番号をSupabaseに挿入
+      // 入力値のバリデーション
+      if (!expiry || isNaN(amount) || amount < 1) {
+        alert('有効期限と金額を正しく入力してください');
+        return;
+      }
+
+      // Supabaseにデータを挿入
       const { data, error } = await supabase.from('numbers').insert([
         { number, expiry, amount }
       ]);
 
       if (error) {
         alert('保存に失敗しました');
-        console.error(error);
+        console.error('Supabaseエラー:', error);
       } else {
-        document.getElementById('output').innerText = `発行された番号は ${number} です。控えておいてください。`;
+        document.getElementById('output').innerText =
+          `発行された番号は ${number} です。控えておいてください。`;
       }
     }
   </script>
 </body>
 </html>
-
-
